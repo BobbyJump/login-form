@@ -1,5 +1,6 @@
 import React from "react";
 import countries from "../data/countries"
+import Field from "../components/Field"
 
 export default class App extends React.Component {
   constructor(){
@@ -13,10 +14,12 @@ export default class App extends React.Component {
       gender: "male",
       agree: true,
       avatar: "",
+      age: 0,
       errors: {
         usarname: false,
         password: false,
-        repeatPassword: false
+        repeatPassword: false,
+        age: false
       }
     };
   }
@@ -57,7 +60,7 @@ export default class App extends React.Component {
     if (this.state.username.length < 6){
       errors.usarname = "Must be 6 characters or more";
     }
-    if(this.state.password < 4){
+    if(this.state.password.length < 4){
       errors.password = "Must be 4 characters or more";
     }
     if(this.state.password !== this.state.repeatPassword){
@@ -84,6 +87,18 @@ export default class App extends React.Component {
       </option>
     ));
   };
+  
+  incrementAge = () => {
+    this.setState({
+      age: this.state.age + 1
+    });
+  };
+
+  decrementAge = () => {
+    this.setState({
+      age: this.state.age - 1
+    });
+  };
 
   render() {
     // const getCountriesOptions = countries.map(country =>(
@@ -96,54 +111,40 @@ export default class App extends React.Component {
     return (
       <div className="form-container card">
         <form className="form card-body">
-          <div className="form-group">
-            <label>Username</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter username"
-              ref={node => (this.username = node)}
-              name="username"
-              value = {this.state.username}
-              onChange = {this.onChange}
-            />
-            {this.state.errors.usarname ? (
-              <div className="invalid-feedback">                 {this.state.errors.usarname}
-              </div>
-              ) : null}
-          </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter password"
-              ref={node => (this.password = node)}
-              name="password"
-              value = {this.state.password}
-              onChange = {this.onChange}
-            />
-            {this.state.errors.password ? (
-              <div className="invalid-feedback">                 {this.state.errors.password}
-              </div>
-              ) : null}
-          </div>
-          <div className="form-group">
-            <label>Repeat password</label>
-            <input
-              type = "text"
-              className = "form-control"
-              placeholder = "Enter repeat password"
-              ref = {node => (this.repeatPassword = node)}
-              name = "repeatPassword"
-              value = {this.state.repeatPassword}
-              onChange = {this.onChange}
-            />
-            {this.state.errors.repeatPassword ? (
-              <div className="invalid-feedback">                 {this.state.errors.repeatPassword}
-              </div>
-              ) : null}
-          </div>
+        
+          <Field 
+            id="username"
+            labelText="Username"
+            type="text"
+            placeholder="Enter username"
+            name="username"
+            value = {this.state.username}
+            onChange = {this.onChange}
+            error = {this.state.errors.usarname}
+          />
+
+          <Field 
+            id="password"
+            labelText="Password"
+            type="password"
+            placeholder="Enter password"
+            name="password"
+            value = {this.state.password}
+            onChange = {this.onChange}
+            error = {this.state.errors.password}
+          />
+          
+          <Field 
+            id="repeatPassword"
+            labelText="Repeat password"
+            type="password"
+            placeholder="Repeat your password"
+            name="repeatPassword"
+            value = {this.state.repeatPassword}
+            onChange = {this.onChange}
+            error = {this.state.errors.repeatPassword}
+          />
+          
           <div className="form-group">
             <label htmlFor="country">Country</label>
             <select 
