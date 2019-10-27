@@ -11,7 +11,13 @@ export default class App extends React.Component {
       repeatPassword: "",
       country: "1",
       gender: "male",
-      agree: true
+      agree: true,
+      avatar: "",
+      errors: {
+        usarname: false,
+        password: false,
+        repeatPassword: false
+      }
     };
   }
 
@@ -34,10 +40,41 @@ export default class App extends React.Component {
     });
   };
 
+  onChangeAvatar = event => {
+    const reader = new FileReader();
+    reader.onload = event =>{
+      this.setState({
+        avatar: event.target.result
+      });
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+
   onSubmit = (event) => {
     event.preventDefault();
     // console.log("refs", this.username.value, this.password.value);
-    console.log(this.state);
+    const errors = {}
+    if (this.state.username.length < 6){
+      errors.usarname = "Must be 6 characters or more";
+    }
+    if(this.state.password < 4){
+      errors.password = "Must be 4 characters or more";
+    }
+    if(this.state.password !== this.state.repeatPassword){
+      errors.repeatPassword = "Must be equal password";
+    }
+    if(Object.keys(errors).length > 0){
+      //error
+      this.setState({
+        errors: errors
+      });
+    }
+    else{
+      this.setState({
+        errors: {}
+      });
+      console.log("submit", this.state);
+    }
   };
 
   getItemsOptions = items =>{
@@ -70,6 +107,10 @@ export default class App extends React.Component {
               value = {this.state.username}
               onChange = {this.onChange}
             />
+            {this.state.errors.usarname ? (
+              <div className="invalid-feedback">                 {this.state.errors.usarname}
+              </div>
+              ) : null}
           </div>
           <div className="form-group">
             <label>Password</label>
@@ -82,6 +123,10 @@ export default class App extends React.Component {
               value = {this.state.password}
               onChange = {this.onChange}
             />
+            {this.state.errors.password ? (
+              <div className="invalid-feedback">                 {this.state.errors.password}
+              </div>
+              ) : null}
           </div>
           <div className="form-group">
             <label>Repeat password</label>
@@ -94,6 +139,10 @@ export default class App extends React.Component {
               value = {this.state.repeatPassword}
               onChange = {this.onChange}
             />
+            {this.state.errors.repeatPassword ? (
+              <div className="invalid-feedback">                 {this.state.errors.repeatPassword}
+              </div>
+              ) : null}
           </div>
           <div className="form-group">
             <label htmlFor="country">Country</label>
@@ -138,7 +187,17 @@ export default class App extends React.Component {
               </label>
             </div>
           </fieldset>
-          <div className="form-check">
+          <div className="form-group">
+            <label htmlFor="avatar">Avatar</label>
+            <input 
+              type="file" 
+              className="form-control-file" 
+              id="avatar" 
+              name="avatar"
+              onChange={this.onChangeAvatar} 
+            />
+          </div>
+          <div className="form-check mb-2">
             <input 
               className="form-check-input" 
               type="checkbox" 
@@ -149,7 +208,7 @@ export default class App extends React.Component {
               checked={this.state.agree}
             />
             <label className="form-check-label" htmlFor="agree">
-              Agree
+              Confirm the processing of data
             </label>
           </div>
           <button
